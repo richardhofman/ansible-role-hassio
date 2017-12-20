@@ -1,0 +1,5 @@
+---
+# tasks file for richardhofman.hassio_docker
+- include_tasks: pre_setup.yml
+- include_tasks: main_setup.yml
+- include_tasks: post_setup.yml

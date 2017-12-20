@@ -1,0 +1,9 @@
+galaxy_info:
+  author: Richard Hofman
+  description: Hass.io Ansible Role
+  company: N/A
+  license: MIT
+  min_ansible_version: 2.1
+  galaxy_tags: [hassio, hass.io, homeassistant, home, automation]
+
+dependencies: []

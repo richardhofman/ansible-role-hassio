@@ -1,0 +1,65 @@
+---
+- name: Determine Docker image names.
+  set_fact:
+    image_names:
+      supervisor: "{{ docker_repo }}/{{ supervisor_prefix[machine] }}-hassio-supervisor"
+      homeassistant: "{{ docker_repo }}/{{ machine }}-homeassistant"
+
+- name: Pull supervisor image.
+  docker_image:
+    name: "{{ image_names['supervisor'] }}"
+    tag: "{{ hassio_version }}"
+
+- name: Tag local image as 'latest'.
+  docker_image:
+    name: "{{ image_names['supervisor'] }}"
+    tag: latest
+
+- name: Install generic hostcontrol
+  get_url:
+    url: "{{ hostcontrol_generic_url }}/{{ hc_version }}"
+    dest: "{{ bin_dir }}/hassio-hc"
+    mode: 0755
+
+- name: Install start-hassio (startup scripts).
+  get_url:
+    url: "{{ start_hassio_url }}"
+    dest: "{{ bin_dir }}/hassio-start"
+    mode: 0755
+
+- name: "Update settings in hassio-start: DATA_SHARE"
+  replace:
+    path: "{{ bin_dir }}/hassio-start"
+    regexp: "%%DATA_SHARE%%"
+    replace: "{{ data_dir }}"
+
+- name: "Update settings in hassio-start: %%SUPERVISOR_IMAGE%%"
+  replace:
+    path: "{{ bin_dir }}/hassio-start"
+    regexp: "%%SUPERVISOR_IMAGE%%"
+    replace: "{{ image_names['supervisor'] }}"
+
+- name: "Update settings in hassio-start: HOMEASSISTANT_IMAGE"
+  replace:
+    path: "{{ bin_dir }}/hassio-start"
+    regexp: "%%HOMEASSISTANT_IMAGE%%"
+    replace: "{{ image_names['homeassistant'] }}"
+
+- name: "Install init scripts: supervisor"
+  get_url:
+    url: "{{ supervisor_service_url }}"
+    dest: /etc/systemd/system/hassio-supervisor.service
+
+- name: "Install init scripts: hostcontrol"
+  get_url:
+    url: "{{ hostcontrol_service_url }}"
+    dest: /etc/systemd/system/hassio-hc.service
+
+- name: Update BIN_DIR in init scripts.
+  replace:
+    path: "{{ item }}"
+    regexp: "%%BIN_DIR%%"
+    replace: "{{ bin_dir }}"
+  with_items:
+    - /etc/systemd/system/hassio-hc.service
+    - /etc/systemd/system/hassio-supervisor.service

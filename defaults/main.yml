@@ -1,0 +1,11 @@
+---
+# defaults file for richardhofman.hassio_docker
+machine: qemux86-64
+docker_repo: homeassistant
+data_dir: /usr/share/hassio
+bin_dir: /usr/bin
+version_url: https://raw.githubusercontent.com/home-assistant/hassio/master/version.json
+start_hassio_url: https://raw.githubusercontent.com/home-assistant/hassio-build/master/install/misc/hassio-start
+supervisor_service_url: https://raw.githubusercontent.com/home-assistant/hassio-build/master/install/systemd/hassio-supervisor.service
+hostcontrol_service_url: https://raw.githubusercontent.com/home-assistant/hassio-build/master/install/systemd/hassio-hc.service
+hostcontrol_generic_url: https://raw.githubusercontent.com/home-assistant/hassio-build/master/generic-hc

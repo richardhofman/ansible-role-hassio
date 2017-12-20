@@ -1,0 +1,94 @@
+- name: Determine distribution (CentOS).
+  set_fact:
+    distribution: 'centos'
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Determine distribution (Debian)
+  set_fact:
+    distribution: 'ubuntu'
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Install EPEL repositories (CentOS 7.x).
+  package: name=epel-release state=latest
+  when: distribution == "centos"
+
+- name: Install all requirements (CentOS 7.x)
+  package: name="{{ item }}" state=latest
+  with_items:
+    - device-mapper-persistent-data
+    - lvm2
+    - jq
+    - socat
+    - curl
+  when: distribution == "centos"
+
+- name: Install SSL APT repo requirements (Debian)
+  package: name="{{ item }}" state=latest
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg2
+    - software-properties-common
+  when: distribution == "ubuntu"
+
+#- name: Install Ubuntu Docker GPG key.
+#  apt_key:
+#    url: https://download.docker.com/linux/ubuntu/gpg
+#    state: present
+#  when: distribution == "ubuntu"
+
+#- name: Add Ubuntu Docker repository.
+#  apt_repository:
+#    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+#    state: present
+#    update_cache: yes
+#  when: distribution == "ubuntu"
+
+- name: Install all requirements (Debian).
+  package: name=$item state=latest
+  with_items:
+    - jq
+    - socat
+    - curl
+    - avahi-daemon
+    - avahi-discover
+    - avahi-utils
+    - libnss-mdns
+    - mdns-scan
+    - dbus
+#   - docker-ce
+  when: distribution == "ubuntu"
+
+- name: Install pip if necessary.
+  include_tasks: install_pip.yml
+
+- name: Ensure docker-py is installed for Ansible dependency.
+  pip:
+    name: docker-py
+
+- name: Set machine architecture name mappings.
+  set_fact:
+    supervisor_prefix:
+      qemux86: i386
+      qemux86-64: amd64
+      raspberrypi: armhf
+      raspberrypi2: armhf
+      raspberrypi3: armhf
+      intel-nuc: amd64
+
+- name: Create Home Assistant data directory.
+  file:
+    path: "{{ data_dir }}"
+    state: directory
+
+- name: Fetch Home Assistant version information.
+  uri:
+    url: "{{ version_url }}"
+    return_content: yes
+  register: ha_version_json
+
+- name: Determine Home Assistant version.
+  set_fact:
+    hassio_version: "{{ (ha_version_json.content|from_json)['hassio'] }}"
+    hc_version: "{{ (ha_version_json.content|from_json)['generic'] }}"
