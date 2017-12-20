@@ -15,15 +15,15 @@ Role Variables
 
 The role exposes a variety of configuration variables, most of which are likely to be fine left as default.
 
-  machine: qemux86-64 # see: https://github.com/home-assistant/hassio-build/tree/master/install#install-hassio
-  docker_repo: homeassistant
-  data_dir: /usr/share/hassio
-  bin_dir: /usr/bin
-  version_url: https://raw.githubusercontent.com/home-assistant/hassio/master/version.json
-  start_hassio_url: https://raw.githubusercontent.com/home-assistant/hassio-build/master/install/misc/hassio-start
-  supervisor_service_url: https://raw.githubusercontent.com/home-assistant/hassio-build/master/install/systemd/hassio-supervisor.service
-  hostcontrol_service_url: https://raw.githubusercontent.com/home-assistant/hassio-build/master/install/systemd/hassio-hc.service
-  hostcontrol_generic_url: https://raw.githubusercontent.com/home-assistant/hassio-build/master/install/hassio_install
+    machine: qemux86-64 # see: https://github.com/home-assistant/hassio-build/tree/master/install#install-hassio
+    docker_repo: homeassistant
+    data_dir: /usr/share/hassio
+    bin_dir: /usr/bin
+    version_url: https://raw.githubusercontent.com/home-assistant/hassio/master/version.json
+    start_hassio_url: https://raw.githubusercontent.com/home-assistant/hassio-build/master/install/misc/hassio-start
+    supervisor_service_url: https://raw.githubusercontent.com/home-assistant/hassio-build/master/install/systemd/hassio-supervisor.service
+    hostcontrol_service_url: https://raw.githubusercontent.com/home-assistant/hassio-build/master/install/systemd/hassio-hc.service
+    hostcontrol_generic_url: https://raw.githubusercontent.com/home-assistant/hassio-build/master/install/hassio_install
 
 Dependencies
 ------------
